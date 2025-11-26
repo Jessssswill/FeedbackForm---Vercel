@@ -12,7 +12,7 @@ function AdminPanel() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/feedback");
+      const res = await fetch("/api/feedback");
       const data = await res.json();
       setFeedback(data);
     } catch (err) {
@@ -29,7 +29,7 @@ function AdminPanel() {
   const deleteFeedback = async (id) => {
     if (!window.confirm("Yakin ingin menghapus data ini?")) return;
     try {
-      await fetch(`http://localhost:5000/api/feedback/${id}`, { method: "DELETE" });
+      await fetch(`/api/feedback/${id}`, { method: "DELETE" });
       setFeedback((prev) => prev.filter((f) => f.id !== id));
     } catch (err) {
       alert("Gagal menghapus data!");
@@ -38,7 +38,7 @@ function AdminPanel() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await fetch(`http://localhost:5000/api/feedback/${selected.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(selected) });
+    await fetch(`/api/feedback/${selected.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(selected) });
     setSelected(null); fetchData();
   };
 
