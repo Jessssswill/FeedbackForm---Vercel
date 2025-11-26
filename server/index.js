@@ -11,35 +11,53 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const getDB = async () => {
-  return await mysql.createConnection(process.env.DATABASE_URL);
+  try {
+    const connection = await mysql.createConnection({
+      uri: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false 
+      }
+    });
+    return connection;
+  } catch (err) {
+    console.error("❌ FATAL: Gagal Konek Database:", err);
+    throw err;
+  }
 };
 
-const ensureTableExists = async (connection) => {
-  await connection.query(`
-    CREATE TABLE IF NOT EXISTS feedbacks (
-      id BIGINT PRIMARY KEY,
-      name VARCHAR(255),
-      email VARCHAR(255),
-      eventName VARCHAR(255),
-      division VARCHAR(50),
-      rating INT,
-      comment TEXT,
-      suggestion TEXT,
-      status VARCHAR(50) DEFAULT 'open',
-      createdAt DATETIME
-    )
-  `);
+const ensureTable = async (connection) => {
+  try {
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS feedbacks (
+        id BIGINT PRIMARY KEY,
+        name VARCHAR(255),
+        email VARCHAR(255),
+        eventName VARCHAR(255),
+        division VARCHAR(50),
+        rating INT,
+        comment TEXT,
+        suggestion TEXT,
+        status VARCHAR(50) DEFAULT 'open',
+        createdAt DATETIME
+      )
+    `);
+    console.log("✅ Tabel feedbacks siap/sudah ada.");
+  } catch (err) {
+    console.error("❌ Gagal buat tabel:", err);
+  }
 };
 
 app.get('/api/feedback', async (req, res) => {
   let connection;
   try {
     connection = await getDB();
-    await ensureTableExists(connection); 
+    await ensureTable(connection);
+    
     const [rows] = await connection.query('SELECT * FROM feedbacks ORDER BY createdAt DESC');
+    console.log(`✅ GET Berhasil: ${rows.length} data ditemukan`);
     res.json(rows);
   } catch (error) {
-    console.error("GET Error:", error);
+    console.error("❌ Error di GET /api/feedback:", error);
     res.status(500).json({ message: error.message });
   } finally {
     if (connection) await connection.end();
@@ -55,14 +73,16 @@ app.post('/api/feedback', async (req, res) => {
 
   try {
     connection = await getDB();
-    await ensureTableExists(connection); 
+    await ensureTable(connection);
+
     await connection.query(
       'INSERT INTO feedbacks (id, name, email, eventName, division, rating, comment, suggestion, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [id, name, email, eventName, division, rating, comment, suggestion, status, createdAt]
     );
+    console.log("✅ POST Berhasil: Data baru masuk");
     res.status(201).json({ message: "Success", id });
   } catch (error) {
-    console.error("POST Error:", error);
+    console.error("❌ Error di POST /api/feedback:", error);
     res.status(500).json({ message: error.message });
   } finally {
     if (connection) await connection.end();
@@ -87,7 +107,6 @@ app.put('/api/feedback/:id', async (req, res) => {
     await connection.query(query, params);
     res.json({ message: "Updated successfully" });
   } catch (error) {
-    console.error("PUT Error:", error);
     res.status(500).json({ message: error.message });
   } finally {
     if (connection) await connection.end();
@@ -101,7 +120,6 @@ app.delete('/api/feedback/:id', async (req, res) => {
     await connection.query('DELETE FROM feedbacks WHERE id = ?', [req.params.id]);
     res.json({ message: "Deleted successfully" });
   } catch (error) {
-    console.error("DELETE Error:", error);
     res.status(500).json({ message: error.message });
   } finally {
     if (connection) await connection.end();
