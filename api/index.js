@@ -1,44 +1,62 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const DATA_FILE = path.join(__dirname, 'data.json');
-
 app.use(cors());
 app.use(bodyParser.json());
 
-const readData = () => {
-  if (!fs.existsSync(DATA_FILE)) {
-    return [];
+let feedbacks = [
+  {
+    id: 1732660000001,
+    name: "Kevin Wijaya",
+    email: "kevin@binus.ac.id",
+    eventName: "Public Speaking 101",
+    division: "PR",
+    rating: 3,
+    comment: "Materi bagus, tapi mulainya agak telat.",
+    suggestion: "Next time on time ya.",
+    createdAt: "2025-11-22T09:15:00.000Z",
+    status: "in-review"
+  },
+  {
+    id: 1732660000002,
+    name: "Siti Aminah",
+    email: "siti@binus.ac.id",
+    eventName: "Figma Design Class",
+    division: "RnD",
+    rating: 4,
+    comment: "Seru banget, mentornya asik.",
+    suggestion: "",
+    createdAt: "2025-11-21T14:30:00.000Z",
+    status: "open"
+  },
+  {
+    id: 1732660000003,
+    name: "Budi Santoso",
+    email: "budi@binus.ac.id",
+    eventName: "React Workshop",
+    "division": "LnT",
+    "rating": 5,
+    "comment": "Daging semua materinya!",
+    "suggestion": "Perbanyak sesi praktek.",
+    "createdAt": "2025-11-20T10:00:00.000Z",
+    "status": "resolved"
   }
-  const data = fs.readFileSync(DATA_FILE);
-  return JSON.parse(data);
-};
-
-const writeData = (data) => {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-};
+];
 
 app.get('/api/feedback', (req, res) => {
-  try {
-    const data = readData();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Gagal membaca data" });
-  }
+  // Langsung kirim variable feedbacks
+  res.json(feedbacks);
 });
 
 app.post('/api/feedback', (req, res) => {
   const { name, email, eventName, division, rating, comment, suggestion } = req.body;
-  const data = readData();
   
   const newFeedback = {
-    id: Date.now(), 
+    id: Date.now(),
     name,
     email,
     eventName,
@@ -46,37 +64,31 @@ app.post('/api/feedback', (req, res) => {
     rating: parseInt(rating),
     comment: comment || "",
     suggestion: suggestion || "",
-    createdAt: new Date().toISOString(), 
+    createdAt: new Date().toISOString(),
     status: "open"
   };
 
-  data.unshift(newFeedback);
-  writeData(data);
+  feedbacks.unshift(newFeedback);
   res.status(201).json(newFeedback);
 });
 
 app.put('/api/feedback/:id', (req, res) => {
   const { id } = req.params;
   const updates = req.body;
-  let data = readData();
   
-  const index = data.findIndex(item => item.id == id);
+  const index = feedbacks.findIndex(item => item.id == id);
   if (index !== -1) {
-    data[index] = { ...data[index], ...updates };
-    writeData(data);
-    res.json(data[index]);
+    feedbacks[index] = { ...feedbacks[index], ...updates };
+    res.json(feedbacks[index]);
   } else {
-    res.status(404).json({ message: "Feedback not found" });
+    res.status(404).json({ message: "Not found" });
   }
 });
 
 app.delete('/api/feedback/:id', (req, res) => {
   const { id } = req.params;
-  let data = readData();
-  const newData = data.filter(item => item.id != id);
-  
-  writeData(newData);
-  res.json({ message: "Deleted successfully" });
+  feedbacks = feedbacks.filter(item => item.id != id);
+  res.json({ message: "Deleted" });
 });
 
 module.exports = app;
