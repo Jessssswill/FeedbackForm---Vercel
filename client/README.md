@@ -40,19 +40,21 @@ Pastikan **Node.js** sudah terinstal di komputer Anda.
 ```bash
 git clone https://github.com/Jessssswill/BNCC-Feedback-Quest.git
 cd BNCC-Feedback-Quest
-
+```
 
 ### 2. Jalankan Backend (server)
 ```bash
 cd server
 npm install
-node index.js    
+node index.js
+```
 
 ### 3. Jalankan Frontend (client)
 ``` bash
 cd client
 npm install
 npm start
+```
 
 ### 4. Struktur project
 ```bash
@@ -70,6 +72,7 @@ root/
 │
 ├── .gitignore          # Konfigurasi Git
 └── README.md           # Dokumentasi Project
+```
 
 ### 5. API ENDPOINTS
 ```bash
@@ -77,3 +80,4 @@ GET	    /api/feedback	    Mengambil seluruh data feedback
 POST	/api/feedback	    Mengirim feedback baru dari form
 PUT	    /api/feedback/:id	Mengupdate status atau komentar (Admin)
 DELETE	/api/feedback/:id	Menghapus data feedback
+```
