@@ -1,38 +1,38 @@
 [
   {
-    "id": 1700000000001,
-    "name": "Budi Santoso",
-    "email": "budi@binus.ac.id",
-    "eventName": "React Workshop",
-    "division": "LnT",
-    "rating": 5,
-    "comment": "Materinya daging banget, kakaknya jelasinnya enak.",
-    "suggestion": "Adain lagi dong kak minggu depan!",
-    "createdAt": "2025-11-20T10:00:00.000Z",
-    "status": "resolved"
-  },
-  {
-    "id": 1700000000003,
+    "id": 1732660000001,
     "name": "Kevin Wijaya",
     "email": "kevin@binus.ac.id",
     "eventName": "Public Speaking 101",
     "division": "PR",
     "rating": 3,
-    "comment": "Lumayan, tapi mulainya agak telat.",
-    "suggestion": "On time please.",
+    "comment": "Materi bagus, tapi mulainya agak telat.",
+    "suggestion": "Next time on time ya.",
     "createdAt": "2025-11-22T09:15:00.000Z",
     "status": "in-review"
   },
   {
-    "id": 1764172517608,
-    "name": "Kenedi Budiman",
-    "email": "Kenedi.Budiman@gmail.com",
-    "eventName": "Stack OverFlow Developers Workshop",
+    "id": 1732660000002,
+    "name": "Siti Aminah",
+    "email": "siti@binus.ac.id",
+    "eventName": "Figma Design Class",
     "division": "RnD",
     "rating": 4,
-    "comment": "Menarik dan sangat bermanfaat",
-    "suggestion": "Disiplinnya ditingkatkan lagi",
-    "createdAt": "2025-11-26T15:55:17.608Z",
+    "comment": "Seru banget, mentornya asik.",
+    "suggestion": "",
+    "createdAt": "2025-11-21T14:30:00.000Z",
     "status": "open"
+  },
+  {
+    "id": 1732660000003,
+    "name": "Budi Santoso",
+    "email": "budi@binus.ac.id",
+    "eventName": "React Workshop",
+    "division": "LnT",
+    "rating": 5,
+    "comment": "Daging semua materinya!",
+    "suggestion": "Perbanyak sesi praktek.",
+    "createdAt": "2025-11-20T10:00:00.000Z",
+    "status": "resolved"
   }
 ]
