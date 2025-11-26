@@ -12,9 +12,11 @@ app.use(bodyParser.json());
 
 const getDB = async () => {
   try {
-    return await mysql.createConnection(process.env.DATABASE_URL);
+    const conn = await mysql.createConnection(process.env.DATABASE_URL);
+    console.log("Database connected!"); 
+    return conn;
   } catch (err) {
-    console.error("GAGAL KONEK DB (Cek Environment Variable):", err);
+    console.error("GAGAL KONEK DB:", err);
     throw err;
   }
 };
@@ -48,10 +50,12 @@ const initDB = async () => {
 initDB();
 
 app.get('/api/feedback', async (req, res) => {
+  console.log("📥 Menerima Request GET...");
   let connection;
   try {
     connection = await getDB();
     const [rows] = await connection.query('SELECT * FROM feedbacks ORDER BY createdAt DESC');
+    console.log(`GET Sukses: Mengirim ${rows.length} data.`);
     res.json(rows);
   } catch (error) {
     console.error("GET Error:", error);
@@ -62,6 +66,7 @@ app.get('/api/feedback', async (req, res) => {
 });
 
 app.post('/api/feedback', async (req, res) => {
+  console.log("outbox Menerima Request POST...");
   const { name, email, eventName, division, rating, comment, suggestion } = req.body;
   const id = Date.now();
   const createdAt = new Date();
@@ -74,6 +79,7 @@ app.post('/api/feedback', async (req, res) => {
       'INSERT INTO feedbacks (id, name, email, eventName, division, rating, comment, suggestion, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [id, name, email, eventName, division, rating, comment, suggestion, status, createdAt]
     );
+    console.log("POST Sukses: Data tersimpan di MySQL.");
     res.status(201).json({ message: "Success", id });
   } catch (error) {
     console.error("POST Error:", error);
