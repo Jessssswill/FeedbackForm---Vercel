@@ -10,15 +10,16 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const pool = mysql.createPool({
-  uri: process.env.DATABASE_URL, 
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  ssl: {
-    rejectUnauthorized: true 
-  }
-});
+const pool = mysql.createPool(process.env.DATABASE_URL);
+
+pool.getConnection()
+  .then(connection => {
+    console.log("BERHASIL KONEK KE DATABASE MySQL!");
+    connection.release();
+  })
+  .catch(err => {
+    console.error("GAGAL KONEK KE DATABASE:", err);
+  });
 
 const initDB = async () => {
   try {
@@ -37,10 +38,9 @@ const initDB = async () => {
         createdAt DATETIME
       )
     `);
-    console.log("Tabel 'feedbacks' siap digunakan!");
     connection.release();
   } catch (err) {
-    console.error("Gagal init database:", err);
+    console.error("Gagal init table:", err);
   }
 };
 
@@ -51,13 +51,14 @@ app.get('/api/feedback', async (req, res) => {
     const [rows] = await pool.query('SELECT * FROM feedbacks ORDER BY createdAt DESC');
     res.json(rows);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
 
 app.post('/api/feedback', async (req, res) => {
   const { name, email, eventName, division, rating, comment, suggestion } = req.body;
-  const id = Date.now(); 
+  const id = Date.now();
   const createdAt = new Date();
   const status = 'open';
 
@@ -68,6 +69,7 @@ app.post('/api/feedback', async (req, res) => {
     );
     res.status(201).json({ message: "Success", id });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -79,7 +81,6 @@ app.put('/api/feedback/:id', async (req, res) => {
   try {
     let query = 'UPDATE feedbacks SET ';
     const params = [];
-    
     if (status) { query += 'status = ?, '; params.push(status); }
     if (comment) { query += 'comment = ?, '; params.push(comment); }
     

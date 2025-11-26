@@ -23,7 +23,7 @@ const FeedbackForm = () => {
     await new Promise((r) => setTimeout(r, 1000));
 
     try {
-      await fetch("http://localhost:5000/api/feedback", {
+      await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
