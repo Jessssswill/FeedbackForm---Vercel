@@ -1,78 +1,109 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const fs = require('fs');
+const mysql = require('mysql2/promise');
 
 const app = express();
-const PORT = 5000;
-const DATA_FILE = './data.json';
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-const readData = () => {
-  if (!fs.existsSync(DATA_FILE)) return [];
-  const data = fs.readFileSync(DATA_FILE);
-  return JSON.parse(data);
-};
-
-const writeData = (data) => {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-};
-
-app.get('/api/feedback', (req, res) => {
-  const data = readData();
-  res.json(data);
-});
-
-app.post('/api/feedback', (req, res) => {
-  const { name, email, eventName, division, rating, comment, suggestion } = req.body;
-  const data = readData();
-  
-  const newFeedback = {
-    id: Date.now(), 
-    name,
-    email,
-    eventName,
-    division,
-    rating: parseInt(rating),
-    comment: comment || "",
-    suggestion: suggestion || "",
-    createdAt: new Date().toISOString(), 
-    status: "open"
-  };
-
-  data.push(newFeedback);
-  writeData(data);
-  res.status(201).json(newFeedback);
-});
-
-app.put('/api/feedback/:id', (req, res) => {
-  const { id } = req.params;
-  const updates = req.body;
-  let data = readData();
-  
-  const index = data.findIndex(item => item.id == id);
-  if (index !== -1) {
-    data[index] = { ...data[index], ...updates };
-    writeData(data);
-    res.json(data[index]);
-  } else {
-    res.status(404).json({ message: "Feedback not found" });
+const pool = mysql.createPool({
+  uri: process.env.DATABASE_URL, 
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  ssl: {
+    rejectUnauthorized: true 
   }
 });
 
-app.delete('/api/feedback/:id', (req, res) => {
+const initDB = async () => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS feedbacks (
+        id BIGINT PRIMARY KEY,
+        name VARCHAR(255),
+        email VARCHAR(255),
+        eventName VARCHAR(255),
+        division VARCHAR(50),
+        rating INT,
+        comment TEXT,
+        suggestion TEXT,
+        status VARCHAR(50) DEFAULT 'open',
+        createdAt DATETIME
+      )
+    `);
+    console.log("Tabel 'feedbacks' siap digunakan!");
+    connection.release();
+  } catch (err) {
+    console.error("Gagal init database:", err);
+  }
+};
+
+initDB();
+
+app.get('/api/feedback', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM feedbacks ORDER BY createdAt DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/feedback', async (req, res) => {
+  const { name, email, eventName, division, rating, comment, suggestion } = req.body;
+  const id = Date.now(); 
+  const createdAt = new Date();
+  const status = 'open';
+
+  try {
+    await pool.query(
+      'INSERT INTO feedbacks (id, name, email, eventName, division, rating, comment, suggestion, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, name, email, eventName, division, rating, comment, suggestion, status, createdAt]
+    );
+    res.status(201).json({ message: "Success", id });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.put('/api/feedback/:id', async (req, res) => {
+  const { status, comment } = req.body;
   const { id } = req.params;
-  let data = readData();
-  const newData = data.filter(item => item.id != id);
-  
-  writeData(newData);
-  res.json({ message: "Deleted successfully" });
+
+  try {
+    let query = 'UPDATE feedbacks SET ';
+    const params = [];
+    
+    if (status) { query += 'status = ?, '; params.push(status); }
+    if (comment) { query += 'comment = ?, '; params.push(comment); }
+    
+    query = query.slice(0, -2) + ' WHERE id = ?';
+    params.push(id);
+
+    await pool.query(query, params);
+    res.json({ message: "Updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.delete('/api/feedback/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM feedbacks WHERE id = ?', [req.params.id]);
+    res.json({ message: "Deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-module.exports = app;
+module.exports = app; 
+
+if (require.main === module) {
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
