@@ -1,24 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-/* ============================================================
-   🎨 GLOBAL SEMI-NEON CYBERPUNK DECORATION (TETAP DIPERTAHANKAN)
-   ============================================================ */
 const NeonBackground = () => (
   <>
-    {/* Soft Cyber Grid */}
     <div className="pointer-events-none fixed inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(0deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] opacity-20" />
-
-    {/* Soft Cyan Glow */}
     <div className="pointer-events-none fixed top-[10%] left-[5%] w-[420px] h-[420px] bg-cyan-500/20 blur-[140px] animate-glow" />
-
-    {/* Soft Purple Glow */}
     <div className="pointer-events-none fixed bottom-[10%] right-[5%] w-[420px] h-[420px] bg-purple-500/20 blur-[140px] animate-glow delay-500" />
   </>
 );
 
-/* ============================================================
-   🔵 MAIN APP WRAPPER
-   ============================================================ */
 function App() {
   const [view, setView] = useState("form");
   const [pageAnimation, setPageAnimation] = useState("softFade");
@@ -27,11 +16,9 @@ function App() {
     <div className="min-h-screen bg-[#0d1525] text-gray-200 font-sans relative overflow-hidden">
       <NeonBackground />
 
-      {/* ===================== 🔷 NAVBAR ===================== */}
       <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0d1525]/80 backdrop-blur-xl shadow-[0_0_30px_rgba(0,255,255,0.08)] transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,255,255,0.15)]">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center max-w-6xl">
 
-          {/* LOGO */}
           <div
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setView("form")}
@@ -50,7 +37,6 @@ function App() {
             </div>
           </div>
 
-          {/* SWITCH VIEW */}
           <div className="flex bg-white/5 p-1 rounded-xl border border-white/10 backdrop-blur-md shadow-inner">
             {["form", "admin"].map((tab) => (
               <button
@@ -73,12 +59,10 @@ function App() {
         </div>
       </nav>
 
-      {/* ===================== 🔷 MAIN CONTENT ===================== */}
       <div className={`container mx-auto max-w-6xl p-6 md:p-10 relative z-10 animate-${pageAnimation}`}>
         {view === "form" ? <FeedbackForm /> : <AdminPanel />}
       </div>
 
-      {/* ===================== 🔷 FOOTER ===================== */}
       <footer className="text-center text-slate-500 text-sm py-10 border-t border-white/10">
         © 2025 BNCC Research & Development
         <span className="text-cyan-500/50"> | </span>
@@ -88,9 +72,6 @@ function App() {
   );
 }
 
-/* ============================================================
-   🔵 FEEDBACK FORM (TETAP SAMA, TIDAK DIHAPUS)
-   ============================================================ */
 function FeedbackForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -160,7 +141,6 @@ function FeedbackForm() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 animate-slideFade">
-      {/* HEADER */}
       <div className="bg-gradient-to-r from-[#0d233d] to-[#0c2038] p-8 rounded-t-3xl border border-white/10 shadow-[0_0_25px_rgba(0,255,255,0.10)] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/20 blur-2xl -mr-10 -mt-10" />
         <h2 className="text-3xl font-bold">Event Feedback Form</h2>
@@ -170,7 +150,6 @@ function FeedbackForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* SECTION 1 */}
         <div className="bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.35)] hover:shadow-[0_8px_40px_rgba(0,0,0,0.55)] transition-all duration-500 hover:scale-[1.01]">
           <h3 className="text-xl font-bold flex items-center gap-3 border-b border-white/10 pb-4 mb-6">
             <span className="w-8 h-8 rounded-md bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-400/30">
@@ -220,7 +199,6 @@ function FeedbackForm() {
           </div>
         </div>
 
-        {/* SECTION 2 */}
         <div className="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-[0_0_18px_rgba(0,255,255,0.08)]">
           <h3 className="text-xl font-bold flex items-center gap-3 border-b border-white/10 pb-4 mb-6">
             <span className="w-8 h-8 rounded-md bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-400/30">
@@ -260,7 +238,6 @@ function FeedbackForm() {
           </div>
         </div>
 
-        {/* SECTION 3 */}
         <div className="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 shadow-[0_0_18px_rgba(0,255,255,0.08)]">
           <h3 className="text-xl font-bold flex items-center gap-3 border-b border-white/10 pb-4 mb-6">
             <span className="w-8 h-8 rounded-md bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-400/30">
@@ -304,9 +281,6 @@ function FeedbackForm() {
   );
 }
 
-/* ============================================================
-   🔵 ADMIN PANEL (DENGAN UPDATE KOLOM DATE)
-   ============================================================ */
 function AdminPanel() {
   const [feedback, setFeedback] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -362,63 +336,62 @@ function AdminPanel() {
       return 0;
     });
 
+  const downloadCSV = () => {
+    const headers = "ID,Name,Email,Division,Event,Rating,Comment,Status,Date\n";
+    const rows = filtered.map(f => 
+      `${f.id},"${f.name}","${f.email}",${f.division},"${f.eventName}",${f.rating},"${f.comment || ''}",${f.status},${f.createdAt}`
+    ).join("\n");
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'feedback_data.csv'; a.click();
+  };
+
   return (
     <div className="space-y-8 animate-softFade">
 
-      {/* HEADER DASHBOARD */}
       <div className="bg-gradient-to-r from-[#0d233d] to-[#0c2038] p-8 rounded-3xl border border-white/10 shadow-[0_0_22px_rgba(0,255,255,0.08)] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500/20 blur-2xl" />
         <h2 className="text-3xl font-bold text-white">Admin Panel</h2>
         <p className="text-blue-200/80 mt-2">Manage all feedback submissions</p>
       </div>
 
-      {/* TOOLBAR */}
-      <div className="bg-white/5 p-5 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg flex flex-col md:flex-row gap-4 justify-between items-center">
+      <div className="bg-white/5 p-5 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg flex flex-col lg:flex-row gap-4 justify-between items-center">
         
-        {/* LEFT: SEARCH */}
-        <div className="w-full md:w-1/2 relative">
+        <div className="w-full lg:w-1/3 relative">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
-          <input
-            type="text"
-            placeholder="Search name or event..."
-            className="bg-[#08111f] border border-white/10 text-white py-3 pl-12 pr-4 rounded-xl w-full outline-none focus:border-cyan-400 transition-all placeholder-slate-500"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+          <input 
+            type="text" 
+            placeholder="Search name or event..." 
+            className="bg-[#08111f] border border-white/10 text-white py-3 pl-12 pr-4 rounded-xl w-full outline-none focus:border-cyan-400 transition-all placeholder-slate-500" 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
           />
         </div>
 
-        {/* RIGHT: FILTERS & ACTIONS */}
-        <div className="flex gap-3 w-full md:w-auto justify-end overflow-x-auto pb-1 md:pb-0">
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-[#08111f] border border-white/10 text-white px-4 py-3 rounded-xl outline-none focus:border-cyan-400 cursor-pointer"
-          >
+        <div className="flex flex-wrap gap-3 w-full lg:w-auto justify-end items-center">
+          
+          <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="bg-[#08111f] border border-white/10 text-white px-4 py-3 rounded-xl outline-none focus:border-cyan-400 cursor-pointer">
             <option value="all">All Status</option>
             <option value="open">Open</option>
             <option value="in-review">In Review</option>
             <option value="resolved">Resolved</option>
           </select>
 
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="bg-[#08111f] border border-white/10 text-white px-4 py-3 rounded-xl outline-none focus:border-cyan-400 cursor-pointer"
-          >
+          <select value={sort} onChange={(e) => setSort(e.target.value)} className="bg-[#08111f] border border-white/10 text-white px-4 py-3 rounded-xl outline-none focus:border-cyan-400 cursor-pointer">
             <option value="newest">Newest</option>
             <option value="rating_high">Highest Rating</option>
           </select>
+          
+          <button onClick={downloadCSV} className="px-6 py-3 rounded-xl bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 transition font-bold whitespace-nowrap shadow-[0_0_15px_rgba(74,222,128,0.15)]">
+            Export CSV
+          </button>
 
-          <button
-            onClick={fetchData}
-            className="px-6 py-3 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-300/20 transition font-bold whitespace-nowrap shadow-[0_0_15px_rgba(0,255,255,0.15)]"
-          >
+          <button onClick={fetchData} className="px-6 py-3 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-300/20 transition font-bold whitespace-nowrap shadow-[0_0_15px_rgba(0,255,255,0.15)]">
             Refresh
           </button>
         </div>
       </div>
 
-      {/* ==================== TABLE (ADDED DATE COLUMN) ==================== */}
       <div className="bg-white/5 backdrop-blur-lg rounded-3xl border border-white/10 shadow-[0_0_20px_rgba(0,255,255,0.1)] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -427,7 +400,7 @@ function AdminPanel() {
                 <th className="p-6 font-bold">Name</th>
                 <th className="p-6 font-bold">Division</th>
                 <th className="p-6 font-bold text-center">Rating</th>
-                <th className="p-6 font-bold text-center">Date</th> {/* 👈 KOLOM BARU */}
+                <th className="p-6 font-bold text-center">Date</th> 
                 <th className="p-6 font-bold text-center">Status</th>
                 <th className="p-6 font-bold text-center">Actions</th>
               </tr>
@@ -470,7 +443,6 @@ function AdminPanel() {
                       <span className="text-yellow-400/50 ml-1">★</span>
                     </td>
 
-                    {/* 🟢 DATA TANGGAL (BARU) */}
                     <td className="p-6 text-center text-slate-400 font-mono text-xs">
                       {new Date(f.createdAt).toLocaleDateString()}
                     </td>
@@ -516,7 +488,6 @@ function AdminPanel() {
         </div>
       </div>
 
-      {/* 🟦 MODAL DETAIL (POPUP) */}
       {selected && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 animate-softFade p-4">
           <div className="bg-[#0f1b2d] p-8 rounded-3xl w-full max-w-md border border-cyan-300/20 shadow-[0_0_50px_rgba(0,255,255,0.15)] animate-softScale relative">

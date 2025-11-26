@@ -1,11 +1,11 @@
-1. # 🚀 BNCC Feedback System - Quest Rolling Week
+1. # BNCC Feedback System - Quest Rolling Week
 
 **Divisi Research and Development (RnD) - BNCC 37**
 
 Website **Feedback Management System** modern yang dirancang untuk mengumpulkan dan mengelola ulasan acara internal BNCC. Aplikasi ini dibangun menggunakan arsitektur **Client-Server** dengan tampilan **Dark Mode Glassmorphism** yang futuristik dan interaktif.
 
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Frontend:** React.js, Tailwind CSS (Custom Glassmorphism UI)
 * **Backend:** Node.js, Express.js
@@ -15,13 +15,13 @@ Website **Feedback Management System** modern yang dirancang untuk mengumpulkan 
 
 ## ✨ Fitur Unggulan
 
-### 🎨 User Interface (Frontend)
+### User Interface (Frontend)
 * **Premium Dark Mode:** Tampilan visual modern dengan dekorasi *glowing orbs*.
 * **Glassmorphism Effect:** Panel semi-transparan dengan efek *blur* yang estetis.
 * **Smooth Animations:** Transisi halaman, *hover effects*, dan *modal popup* yang halus.
 * **Responsive Design:** Layout yang menyesuaikan layar (Grid & Flexbox).
 
-### ⚙️ Admin Dashboard (Backend & Logic)
+### Admin Dashboard (Backend & Logic)
 * **Real-time Statistics:** Ringkasan jumlah feedback, rata-rata rating, dan status *pending*.
 * **Advanced Filtering:** Filter berdasarkan status (**Open**, **In-Review**, **Resolved**).
 * **Smart Sorting:** Urutkan data berdasarkan **Terbaru** atau **Rating Tertinggi**.
@@ -30,7 +30,7 @@ Website **Feedback Management System** modern yang dirancang untuk mengumpulkan 
 * **CRUD Lengkap:** Create (Form), Read (Table), Update (Status & Comment), Delete.
 
 
-## 💻 Cara Menjalankan (Run Lokal)
+## Cara Menjalankan (Run Lokal)
 
 Pastikan **Node.js** sudah terinstal di komputer Anda.
 
@@ -56,17 +56,16 @@ npm start
 
 ### 4. Struktur project
 ```bash
-root/
-├── server/             # Backend (Express API)
-│   ├── data.json       # File Database Lokal
-│   ├── index.js        # Server Entry Point & API Routes
-│   └── package.json
-│
-├── client/             # Frontend (React Application)
+RND/
+├── Client/                 # Frontend (React Application)
+│   ├── Server/             # Backend (Express API)
+│   ├    ├── data.json      # File Database Lokal
+│   ├    ├── index.js       # Server Entry Point & API Routes
+│   ├    └── package.json
 │   ├── src/
-│   │   ├── App.js      # Logika Utama UI & Fitur
-│   │   └── index.css   # Tailwind Configuration
-│   └── package.json
+│   │   ├── App.js          # Logika Utama UI & Fitur
+│   │   ├── index.css       # Tailwind Configuration
+│   │   └── package.json        
 │
 ├── .gitignore          # Konfigurasi Git
 └── README.md           # Dokumentasi Project
